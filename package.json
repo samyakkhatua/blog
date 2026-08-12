@@ -1,0 +1,21 @@
+{
+  "name": "blog-samyak",
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^4.16.18",
+    "gray-matter": "^4.0.3",
+    "marked": "^15.0.6",
+    "shiki": "^1.29.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.4"
+  }
+}

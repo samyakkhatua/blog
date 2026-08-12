@@ -1,0 +1,91 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { SITE_CONFIG } from '../config';
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+}
+
+const {
+  title = SITE_CONFIG.title,
+  description = SITE_CONFIG.description,
+  image = `${SITE_CONFIG.siteUrl}/og-image.png`
+} = Astro.props;
+
+const pageTitle = title === SITE_CONFIG.title ? title : `${title} | ${SITE_CONFIG.title}`;
+const canonicalURL = new URL(Astro.url.pathname, SITE_CONFIG.siteUrl);
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    
+    <!-- Primary Meta Tags -->
+    <title>{pageTitle}</title>
+    <meta name="title" content={pageTitle} />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={image} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={pageTitle} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={image} />
+
+    <!-- Inline Script to Avoid Theme Flash -->
+    <script is:inline>
+      (function() {
+        const saved = localStorage.getItem('theme');
+        const theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', theme);
+        if (theme === 'dark') document.documentElement.classList.add('dark');
+      })();
+    </script>
+  </head>
+  <body>
+    <Header />
+    <main id="main-content" style="flex: 1;">
+      <slot />
+    </main>
+    <Footer />
+
+    <!-- Copy Code Button Script -->
+    <script>
+      document.addEventListener('click', (e) => {
+        const btn = (e.target as HTMLElement).closest('.copy-code-btn');
+        if (!btn) return;
+        
+        const wrapper = btn.closest('.code-block-wrapper');
+        const code = wrapper?.querySelector('code')?.innerText;
+        
+        if (code) {
+          navigator.clipboard.writeText(code).then(() => {
+            const span = btn.querySelector('span');
+            if (span) {
+              const orig = span.textContent;
+              span.textContent = 'Copied!';
+              setTimeout(() => {
+                span.textContent = orig;
+              }, 2000);
+            }
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

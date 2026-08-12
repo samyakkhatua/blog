@@ -1,0 +1,25 @@
+---
+import { SITE_CONFIG } from '../config';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-inner">
+      <div>
+        <p>© {year} {SITE_CONFIG.author.name}. All rights reserved.</p>
+      </div>
+
+      <div class="footer-links">
+        <a href="/" class="footer-link">Home</a>
+        {SITE_CONFIG.author.social.github && (
+          <a href={SITE_CONFIG.author.social.github} target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
+        )}
+        {SITE_CONFIG.author.social.linkedin && (
+          <a href={SITE_CONFIG.author.social.linkedin} target="_blank" rel="noopener noreferrer" class="footer-link">LinkedIn</a>
+        )}
+      </div>
+    </div>
+  </div>
+</footer>
