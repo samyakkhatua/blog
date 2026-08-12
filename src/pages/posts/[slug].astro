@@ -24,6 +24,10 @@ const hasToc = toc && toc.length > 0;
   title={frontmatter.title}
   description={frontmatter.summary}
   image={frontmatter.coverImage}
+  type="article"
+  publishDate={frontmatter.date}
+  updatedDate={frontmatter.updated}
+  authorName={SITE_CONFIG.author.name}
 >
   <div class="container">
     <!-- Header Section -->
