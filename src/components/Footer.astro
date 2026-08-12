@@ -8,11 +8,12 @@ const year = new Date().getFullYear();
   <div class="container">
     <div class="footer-inner">
       <div>
-        <p>© {year} {SITE_CONFIG.author.name}. All rights reserved.</p>
+        <p>© {year} {SITE_CONFIG.author.name} · blog.samyakkhatua.in</p>
       </div>
 
       <div class="footer-links">
-        <a href="/" class="footer-link">Home</a>
+        <a href="/" class="footer-link">Writing</a>
+        <a href="https://samyakkhatua.in" target="_blank" rel="noopener noreferrer" class="footer-link">Portfolio</a>
         {SITE_CONFIG.author.social.github && (
           <a href={SITE_CONFIG.author.social.github} target="_blank" rel="noopener noreferrer" class="footer-link">GitHub</a>
         )}

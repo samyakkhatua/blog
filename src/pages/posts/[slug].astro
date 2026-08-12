@@ -31,60 +31,61 @@ const hasToc = toc && toc.length > 0;
 >
   <div class="container">
     <!-- Header Section -->
-    <header class="post-header">
-      <h1 class="post-title">{frontmatter.title}</h1>
+    <header class="post-detail-header">
+      <div class="label-mono" style="margin-bottom: 0.75rem;">
+        01 / Article
+      </div>
       
-      <div class="post-meta-bar">
+      <h1 class="post-detail-title">{frontmatter.title}</h1>
+      
+      <div class="post-card-meta" style="font-size: 0.8125rem;">
         <span>{frontmatter.date}</span>
-        <span class="dot-separator">•</span>
+        <span>•</span>
         <span>{readTime}</span>
-        <span class="dot-separator">•</span>
+        <span>•</span>
         <a
           href={rawUrl}
           target="_blank"
           rel="noopener noreferrer"
-          class="markdown-link"
+          style="color: var(--signal); text-decoration: none; font-weight: 500;"
         >
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
-            <polyline points="14 2 14 8 20 8"></polyline>
-          </svg>
-          View as Markdown
+          View as Markdown ↗
         </a>
       </div>
     </header>
 
     <!-- Cover Image -->
     {frontmatter.coverImage && (
-      <div class="cover-image-container">
+      <div style="width: 100%; margin-bottom: 2.5rem; border-radius: var(--radius-lg); overflow: hidden; border: 1px solid var(--border-color);">
         <img
           src={frontmatter.coverImage}
           alt={frontmatter.title}
-          class="cover-image"
+          style="width: 100%; height: auto; max-height: 28rem; object-fit: cover; display: block;"
         />
       </div>
     )}
 
     <!-- Author Card -->
-    <div class="container-narrow" style="padding: 0;">
-      <div class="author-card">
-        <img
-          src={SITE_CONFIG.author.avatar}
-          alt={SITE_CONFIG.author.name}
-          class="author-avatar"
-        />
-        <div style="flex: 1;">
-          <div class="author-name">{SITE_CONFIG.author.name}</div>
-          <div class="author-bio">{SITE_CONFIG.author.bio}</div>
-        </div>
+    <div class="author-card">
+      <img
+        src={SITE_CONFIG.author.avatar}
+        alt={SITE_CONFIG.author.name}
+        class="author-avatar"
+      />
+      <div style="flex: 1;">
+        <div class="author-name">{SITE_CONFIG.author.name}</div>
+        <div class="author-bio">{SITE_CONFIG.author.bio}</div>
       </div>
+      <a href="https://samyakkhatua.in" target="_blank" rel="noopener noreferrer" class="btn-outline" style="padding: 0.4rem 0.85rem; font-size: 0.75rem;">
+        Portfolio ↗
+      </a>
     </div>
 
     <!-- Article Content Layout (with Sidebar TOC) -->
     <div class={`post-layout-grid ${hasToc ? 'has-toc' : ''}`}>
       {hasToc && (
         <aside class="toc-sidebar">
-          <div class="toc-title">On this page</div>
+          <div class="label-mono" style="margin-bottom: 0.75rem; font-size: 0.7rem;">On this page</div>
           <ul class="toc-list">
             {toc.map((item) => (
               <li style={{ paddingLeft: `${(item.level - 2) * 0.75}rem` }}>
@@ -104,17 +105,8 @@ const hasToc = toc && toc.length > 0;
 
     <!-- Back to Articles Button -->
     <div style="margin-top: 4rem; margin-bottom: 4rem; text-align: center;">
-      <a
-        href="/"
-        style="display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.65rem 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-color); background-color: var(--bg-card); color: var(--text-foreground); font-weight: 600; font-size: 0.875rem; text-decoration: none; transition: all 0.2s ease;"
-        onmouseover="this.style.borderColor='var(--primary)'; this.style.color='var(--primary)'"
-        onmouseout="this.style.borderColor='var(--border-color)'; this.style.color='var(--text-foreground)'"
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M19 12H5"></path>
-          <path d="M12 19l-7-7 7-7"></path>
-        </svg>
-        Back to all articles
+      <a href="/" class="btn-outline">
+        ← Back to all articles
       </a>
     </div>
   </div>
