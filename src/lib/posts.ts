@@ -34,136 +34,6 @@ interface PostRaw {
   content: string;
 }
 
-// Sample fallback post in case GitHub repo is not yet reachable or empty
-const FALLBACK_POSTS: PostRaw[] = [
-  {
-    path: 'react-fundamentals-components-jsx-state-and-re-rendering.md',
-    content: `---
-title: "React Fundamentals: Components, JSX, State, and Re-rendering"
-date: "2026-08-10"
-slug: "react-fundamentals-components-jsx-state-and-re-rendering"
-summary: "Understand the four core pillars of React development: components, JSX, state, and re-rendering with practical mental models and code examples."
-tags: ["React", "JavaScript", "Frontend"]
-coverImage: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?q=80&w=1200&auto=format&fit=crop"
----
-
-If you've ever visited a website where clicking a button updated the page instantly—no refresh, no loading spinner, no blank screen—you've experienced React doing what it does best. React didn't just change how we build user interfaces; it changed how we *think* about them.
-
-Instead of manually hunting through the DOM and patching it, you describe what the UI should look like for any given state, and React handles the messy work of getting the browser there.
-
-## 1. Components: The Building Blocks
-
-Think of components like LEGO bricks. A LEGO castle isn't one giant plastic blob—it's hundreds of small, reusable pieces snapped together. React applications work exactly the same way. A component is a self-contained, reusable piece of UI that manages its own structure and behavior.
-
-Here's the simplest component you can write:
-
-\`\`\`javascript
-function Greeting() {
-  return <h1>Hello, Developer!</h1>;
-}
-\`\`\`
-
-That's it. A function that returns UI. The name **must** start with a capital letter—React uses this convention to distinguish components from regular HTML tags.
-
-### Components Accept Props
-
-Static components are fine, but the real power shows up when components become configurable. That's what **props** (short for properties) are for:
-
-\`\`\`javascript
-function ProfileCard({ name, role }) {
-  return (
-    <div className="profile-card">
-      <h2>{name}</h2>
-      <p>Role: {role}</p>
-    </div>
-  );
-}
-\`\`\`
-
-## 2. JSX: HTML That Thinks
-
-JSX looks like HTML, but it plays by JavaScript's rules. Under the hood, build tools transform it into plain JavaScript calls.
-
-\`\`\`typescript
-const user = { name: "Samyak", role: "Engineer" };
-
-function UserCard() {
-  return (
-    <div>
-      <h1>{user.name}</h1>
-      <p>{user.role}</p>
-    </div>
-  );
-}
-\`\`\`
-
-## 3. State: A Component's Memory
-
-Props make components configurable. **State** makes them *alive*.
-
-\`\`\`javascript
-import { useState } from "react";
-
-function Counter() {
-  const [count, setCount] = useState(0);
-
-  return (
-    <button onClick={() => setCount(count + 1)}>
-      Clicked {count} times
-    </button>
-  );
-}
-\`\`\`
-
-### The Golden Rule: Never Mutate State Directly
-
-\`\`\`javascript
-// ❌ WRONG — React won't re-render
-count = count + 1;
-
-// ✅ RIGHT — Schedules state update & re-renders UI
-setCount(count + 1);
-\`\`\`
-
-## 4. Re-rendering: How React Stays Fast
-
-> **A render is React calling your component function again to figure out what the UI should look like now.**
-
-When state changes, React compares the new virtual DOM tree with the previous one and patches only the changed elements in the real DOM.
-
-## Key Takeaways
-
-1. **Components** encapsulate UI logic and structure.
-2. **JSX** combines HTML syntax with JavaScript power.
-3. **State** represents dynamic data that triggers UI updates.
-4. **Re-rendering** relies on virtual DOM diffing for optimal performance.
-`
-  },
-  {
-    path: 'welcome-to-my-blog.md',
-    content: `---
-title: "Welcome to My Personal Blog"
-date: "2026-08-01"
-slug: "welcome-to-my-blog"
-summary: "An introduction to this static blog powered by Astro and GitHub Markdown content."
-tags: ["Meta", "Astro", "Blog"]
----
-
-Welcome to my personal blog!
-
-This blog is built using **Astro** and deployed as a static website on **Cloudflare Pages**.
-
-### How It Works
-
-- Article Markdown files live in a public GitHub repository.
-- During build time, Astro fetches the \`.md\` files via GitHub API.
-- Articles are rendered with syntax highlighting powered by Shiki.
-
-Stay tuned for more articles on web development, system design, and software engineering!
-`
-  }
-];
-
 let shikiHighlighter: any = null;
 
 async function getShiki() {
@@ -206,11 +76,11 @@ function slugify(text: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
-export async function fetchRawMarkdownFiles(): Promise<{ rawPosts: PostRaw[]; isFallback: boolean }> {
+export async function fetchRawMarkdownFiles(): Promise<{ rawPosts: PostRaw[] }> {
   const { githubUsername, repository, branch } = SITE_CONFIG.contentSource;
   
   if (!githubUsername || !repository) {
-    return { rawPosts: FALLBACK_POSTS, isFallback: true };
+    return { rawPosts: [] };
   }
 
   try {
@@ -223,20 +93,20 @@ export async function fetchRawMarkdownFiles(): Promise<{ rawPosts: PostRaw[]; is
     });
 
     if (!response.ok) {
-      console.warn(`[Blog Content] GitHub API returned ${response.status} for ${apiUrl}. Using fallback content.`);
-      return { rawPosts: FALLBACK_POSTS, isFallback: true };
+      console.warn(`[Blog Content] GitHub API returned ${response.status} for ${apiUrl}. No remote posts found.`);
+      return { rawPosts: [] };
     }
 
     const files = await response.json();
     if (!Array.isArray(files)) {
-      return { rawPosts: FALLBACK_POSTS, isFallback: true };
+      return { rawPosts: [] };
     }
 
     const mdFiles = files.filter((f: any) => f.type === 'file' && (f.name.endsWith('.md') || f.name.endsWith('.mdx')));
 
     if (mdFiles.length === 0) {
-      console.warn('[Blog Content] No .md files found in target repo. Using fallback content.');
-      return { rawPosts: FALLBACK_POSTS, isFallback: true };
+      console.warn('[Blog Content] No .md files found in target repo.');
+      return { rawPosts: [] };
     }
 
     const rawPosts: PostRaw[] = await Promise.all(
@@ -251,17 +121,18 @@ export async function fetchRawMarkdownFiles(): Promise<{ rawPosts: PostRaw[]; is
       })
     );
 
-    return { rawPosts, isFallback: false };
+    return { rawPosts };
   } catch (err) {
     console.error('[Blog Content] Error fetching posts from GitHub:', err);
-    return { rawPosts: FALLBACK_POSTS, isFallback: true };
+    return { rawPosts: [] };
   }
 }
 
 export async function getAllPosts(): Promise<Post[]> {
   const { rawPosts } = await fetchRawMarkdownFiles();
-  const highlighter = await getShiki();
+  if (rawPosts.length === 0) return [];
 
+  const highlighter = await getShiki();
   const posts: Post[] = [];
 
   for (const raw of rawPosts) {

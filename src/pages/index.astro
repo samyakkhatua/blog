@@ -47,56 +47,71 @@ const posts = await getAllPosts();
 
     <div style="border-top: 1px solid var(--border-color); margin-bottom: 2rem;"></div>
 
-    <!-- Articles Section -->
+    <!-- Articles Section Header -->
     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem;">
       <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--text-foreground);">
-        Latest Articles
+        Articles
       </h2>
       <span style="font-size: 0.875rem; color: var(--text-muted);">
         {posts.length} {posts.length === 1 ? 'post' : 'posts'}
       </span>
     </div>
 
-    <div class="posts-grid">
-      {posts.map((post) => (
-        <article class="post-card">
-          <div class="post-card-header">
-            <span>{post.frontmatter.date}</span>
-            <span class="dot-separator">•</span>
-            <span>{post.readTime}</span>
-            <span class="dot-separator">•</span>
-            <a
-              href={post.rawUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="markdown-link"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
-                <polyline points="14 2 14 8 20 8"></polyline>
-              </svg>
-              View as Markdown
-            </a>
-          </div>
-
-          <a href={`/posts/${post.slug}`} style="text-decoration: none; display: block;">
-            <h3 class="post-card-title">{post.frontmatter.title}</h3>
-          </a>
-
-          {post.frontmatter.summary && (
-            <p class="post-card-summary">{post.frontmatter.summary}</p>
-          )}
-
-          {post.frontmatter.tags && post.frontmatter.tags.length > 0 && (
-            <div class="post-card-tags">
-              {post.frontmatter.tags.map((tag) => (
-                <span class="tag-badge">#{tag}</span>
-              ))}
+    {posts.length === 0 ? (
+      <div style="text-align: center; padding: 4rem 1rem; border: 1px dashed var(--border-color); border-radius: var(--radius-xl); background-color: var(--bg-card); margin-bottom: 3rem;">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-left: auto; margin-right: auto; margin-bottom: 1rem; color: var(--text-subtle);">
+          <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+        </svg>
+        <h3 style="font-size: 1.125rem; font-weight: 700; color: var(--text-foreground); margin-bottom: 0.5rem;">
+          No articles found yet
+        </h3>
+        <p style="font-size: 0.875rem; color: var(--text-muted); max-width: 24rem; margin-left: auto; margin-right: auto;">
+          Add a <code style="font-family: 'JetBrains Mono', monospace;">.md</code> file to your content repository (<code style="font-family: 'JetBrains Mono', monospace;">{SITE_CONFIG.contentSource.githubUsername}/{SITE_CONFIG.contentSource.repository}</code>) to publish your first post!
+        </p>
+      </div>
+    ) : (
+      <div class="posts-grid">
+        {posts.map((post) => (
+          <article class="post-card">
+            <div class="post-card-header">
+              <span>{post.frontmatter.date}</span>
+              <span class="dot-separator">•</span>
+              <span>{post.readTime}</span>
+              <span class="dot-separator">•</span>
+              <a
+                href={post.rawUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="markdown-link"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+                View as Markdown
+              </a>
             </div>
-          )}
-        </article>
-      ))}
-    </div>
+
+            <a href={`/posts/${post.slug}`} style="text-decoration: none; display: block;">
+              <h3 class="post-card-title">{post.frontmatter.title}</h3>
+            </a>
+
+            {post.frontmatter.summary && (
+              <p class="post-card-summary">{post.frontmatter.summary}</p>
+            )}
+
+            {post.frontmatter.tags && post.frontmatter.tags.length > 0 && (
+              <div class="post-card-tags">
+                {post.frontmatter.tags.map((tag) => (
+                  <span class="tag-badge">#{tag}</span>
+                ))}
+              </div>
+            )}
+          </article>
+        ))}
+      </div>
+    )}
   </div>
 </Layout>
