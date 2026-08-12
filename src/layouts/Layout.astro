@@ -8,16 +8,71 @@ interface Props {
   title?: string;
   description?: string;
   image?: string;
+  type?: 'website' | 'article';
+  publishDate?: string;
+  updatedDate?: string;
+  authorName?: string;
 }
 
 const {
   title = SITE_CONFIG.title,
   description = SITE_CONFIG.description,
-  image = `${SITE_CONFIG.siteUrl}/og-image.png`
+  image = `${SITE_CONFIG.siteUrl}/og-image.png`,
+  type = 'website',
+  publishDate,
+  updatedDate,
+  authorName = SITE_CONFIG.author.name
 } = Astro.props;
 
 const pageTitle = title === SITE_CONFIG.title ? title : `${title} | ${SITE_CONFIG.title}`;
 const canonicalURL = new URL(Astro.url.pathname, SITE_CONFIG.siteUrl);
+
+// Social profile links for Schema.org sameAs
+const socialLinks = [
+  SITE_CONFIG.author.social.github,
+  SITE_CONFIG.author.social.twitter,
+  SITE_CONFIG.author.social.linkedin
+].filter(Boolean);
+
+// Structured Data (JSON-LD) for Search Engines
+const jsonLdSchema = type === 'article' ? {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  'headline': title,
+  'description': description,
+  'image': image,
+  'datePublished': publishDate,
+  'dateModified': updatedDate || publishDate,
+  'mainEntityOfPage': {
+    '@type': 'WebPage',
+    '@id': canonicalURL.toString()
+  },
+  'author': {
+    '@type': 'Person',
+    'name': authorName,
+    'url': SITE_CONFIG.siteUrl,
+    'sameAs': socialLinks
+  },
+  'publisher': {
+    '@type': 'Organization',
+    'name': SITE_CONFIG.title,
+    'logo': {
+      '@type': 'ImageObject',
+      'url': SITE_CONFIG.author.avatar
+    }
+  }
+} : {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  'name': SITE_CONFIG.title,
+  'url': SITE_CONFIG.siteUrl,
+  'description': SITE_CONFIG.description,
+  'author': {
+    '@type': 'Person',
+    'name': SITE_CONFIG.author.name,
+    'sameAs': socialLinks
+  }
+};
 ---
 
 <!DOCTYPE html>
@@ -26,19 +81,24 @@ const canonicalURL = new URL(Astro.url.pathname, SITE_CONFIG.siteUrl);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title={SITE_CONFIG.title} href="/rss.xml" />
     
     <!-- Primary Meta Tags -->
     <title>{pageTitle}</title>
     <meta name="title" content={pageTitle} />
     <meta name="description" content={description} />
+    <meta name="author" content={authorName} />
+    <meta name="robots" content="index, follow" />
     <link rel="canonical" href={canonicalURL} />
 
     <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={type} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={image} />
+    <meta property="og:site_name" content={SITE_CONFIG.title} />
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image" />
@@ -46,6 +106,12 @@ const canonicalURL = new URL(Astro.url.pathname, SITE_CONFIG.siteUrl);
     <meta property="twitter:title" content={pageTitle} />
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={image} />
+    {SITE_CONFIG.author.social.twitter && (
+      <meta property="twitter:creator" content={`@${SITE_CONFIG.author.handle}`} />
+    )}
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLdSchema)} />
 
     <!-- Inline Script to Avoid Theme Flash -->
     <script is:inline>

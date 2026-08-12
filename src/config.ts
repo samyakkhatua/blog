@@ -24,7 +24,7 @@ export interface SiteConfig {
 export const SITE_CONFIG: SiteConfig = {
   title: "Samyak's Blog",
   subtitle: "Software Engineering & Web Development",
-  description: "Personal blog articles and technical deep dives.",
+  description: "Personal articles and technical thoughts by Samyak Khatua.",
   siteUrl: "https://blog.samyakkhatua.in",
   author: {
     name: "Samyak Khatua",
@@ -33,13 +33,14 @@ export const SITE_CONFIG: SiteConfig = {
     bio: "Building software & exploring modern web systems.",
     social: {
       github: "https://github.com/samyakkhatua",
+      twitter: "https://x.com/samyakkhatua",
       linkedin: "https://linkedin.com/in/samyakkhatua",
     },
   },
   // Content repository where your .md files live
   contentSource: {
     githubUsername: "samyakkhatua",
-    repository: "blog-content", // Replace with your public content repo name
+    repository: "blog-content",
     branch: "main",
   },
 };
