@@ -30,7 +30,7 @@ export const SITE_CONFIG: SiteConfig = {
     name: "Samyak Khatua",
     handle: "samyakkhatua",
     avatar: "https://github.com/samyakkhatua.png",
-    bio: "Building software & exploring modern web systems.",
+    bio: "Building Agentic harnesses & developer tools for the AI era.",
     social: {
       github: "https://github.com/samyakkhatua",
       twitter: "https://x.com/samyakkhatua",
