@@ -43,7 +43,7 @@ const posts = await getAllPosts();
 
   <!-- Articles Section -->
   <div class="container">
-    <div class="section-divider" style="margin-top: 3rem;">
+    <div id="articles-section" class="section-divider" style="margin-top: 3rem; scroll-margin-top: 4.5rem;">
       <span class="label-mono">01 / Articles & Notes</span>
       <div class="divider-line"></div>
       <span class="label-mono">{posts.length} {posts.length === 1 ? 'post' : 'posts'}</span>
@@ -107,4 +107,45 @@ const posts = await getAllPosts();
       </div>
     )}
   </div>
+
+  <!-- Custom Slow & Silky Auto-scroll Script -->
+  <script>
+    function slowSmoothScrollTo(element: HTMLElement, duration = 1800) {
+      const headerOffset = 72;
+      const targetPosition = element.getBoundingClientRect().top + window.pageYOffset - headerOffset;
+      const startPosition = window.pageYOffset;
+      const distance = targetPosition - startPosition;
+      let startTime: number | null = null;
+
+      function animation(currentTime: number) {
+        if (startTime === null) startTime = currentTime;
+        const timeElapsed = currentTime - startTime;
+        const progress = Math.min(timeElapsed / duration, 1);
+
+        // Ease-in-out cubic curve for silky smooth acceleration & deceleration
+        const ease = progress < 0.5
+          ? 4 * progress * progress * progress
+          : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+        window.scrollTo(0, startPosition + distance * ease);
+
+        if (timeElapsed < duration) {
+          requestAnimationFrame(animation);
+        }
+      }
+
+      requestAnimationFrame(animation);
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (!window.location.hash) {
+        setTimeout(() => {
+          const target = document.getElementById('articles-section');
+          if (target) {
+            slowSmoothScrollTo(target, 1800); // 1.8s silky slow scroll
+          }
+        }, 600);
+      }
+    });
+  </script>
 </Layout>
